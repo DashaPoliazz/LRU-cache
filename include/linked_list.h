@@ -5,8 +5,8 @@
 
 struct Node {
   void *value;
-  struct Node *left;
-  struct Node *right;
+  struct Node *prev;
+  struct Node *next;
 };
 
 struct LinkedList {
@@ -15,7 +15,7 @@ struct LinkedList {
 };
 
 struct Node *create_node(size_t data_size, void *data);
-struct LinkedList create_list();
+struct LinkedList *create_list();
 void push_right(struct LinkedList *list, size_t data_size, void *data);
 void *pop_left(struct LinkedList *list);
 void push_left(struct LinkedList *list, size_t data_size, void *data);
