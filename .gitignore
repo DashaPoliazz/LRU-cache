@@ -1,3 +1,6 @@
+#ingoring sandbox file
+sandbox.c
+
 # Ignore the build directory
 build/
 

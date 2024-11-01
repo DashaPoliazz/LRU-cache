@@ -30,17 +30,54 @@ void push_right(struct LinkedList *list, size_t data_size, void *data) {
   if (list->head == NULL) {
     list->head = node;
     list->tail = node;
-    printf("before segfault\n");
     return;
   }
 
   /* otherwise, we have tail */
+  node->prev = list->tail;
   list->tail->next = node;
   list->tail = node;
 };
 
-void push_left(struct LinkedList *list, size_t data_size, void *data) {}
-void *pop_left(struct LinkedList *list) {}
+void push_left(struct LinkedList *list, size_t data_size, void *data) {
+  if (list == NULL) {
+    return;
+  }
+
+  struct Node *node = create_node(data_size, data);
+  /* if there is no head, then we have to create it and init as tail */
+  if (list->head == NULL) {
+    list->head = node;
+    list->tail = node;
+    return;
+  }
+
+  node->next = list->head;
+  list->head->prev = node;
+  list->head = node;
+}
+
+void *pop_left(struct LinkedList *list) {
+  if (list->head == NULL) {
+    return NULL;
+  }
+
+  struct Node *head = list->head;
+  struct Node *new_head = head->next;
+  /* the last node has been removed */
+  if (new_head == NULL) {
+    list->head = NULL;
+    list->tail = NULL;
+    return head->value;
+  }
+  /* establishing new connections */
+  head->next = NULL;
+  new_head->prev = NULL;
+  list->head = new_head;
+
+  return new_head->value;
+}
+
 void *pop_right(struct LinkedList *list) {}
 void *peek_head(struct LinkedList *list) {}
 void *peek_tail(struct LinkedList *list) {}

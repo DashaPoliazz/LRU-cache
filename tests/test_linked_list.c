@@ -37,9 +37,54 @@ void test_push_right() {
   assert(*(int *)list->head->value == one);
 }
 
+void test_push_left() {
+  printf("test_push_left\n");
+  struct LinkedList *list = create_list();
+  size_t data_size = sizeof(int);
+  int one = 1;
+  push_left(list, data_size, &one);
+
+  assert(*(int *)list->tail->value == one);
+  assert(*(int *)list->head->value == one);
+
+  int two = 2;
+  push_left(list, data_size, &two);
+
+  assert(*(int *)list->tail->value == one);
+  assert(*(int *)list->head->value == two);
+}
+
+void test_pop_left() {
+  printf("test_pop_left\n");
+  struct LinkedList *list = create_list();
+
+  int one = 1;
+  push_right(list, sizeof(int), &one);
+  int two = 2;
+  push_right(list, sizeof(int), &two);
+  int three = 3;
+  push_right(list, sizeof(int), &three);
+
+  int it_should_be_one = *(int *)pop_left(list);
+  assert(it_should_be_one == one);
+
+  int it_should_be_two = *(int *)pop_left(list);
+  assert(it_should_be_two == two);
+
+  assert(list->head == list->tail);
+
+  int it_should_be_three = *(int *)pop_left(list);
+  assert(it_should_be_three == three);
+
+  // assert(list->head == NULL);
+  // assert(list->tail == NULL);
+}
+
 int main() {
   printf("Running tests for LRU Cache");
   test_create_node();
   test_push_right();
+  test_push_left();
+  test_pop_left();
   return 0;
 }
