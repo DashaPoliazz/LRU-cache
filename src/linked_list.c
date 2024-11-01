@@ -57,27 +57,56 @@ void push_left(struct LinkedList *list, size_t data_size, void *data) {
   list->head = node;
 }
 
-void *pop_left(struct LinkedList *list) {
+struct Node *pop_left(struct LinkedList *list) {
   if (list->head == NULL) {
     return NULL;
   }
 
   struct Node *head = list->head;
-  struct Node *new_head = head->next;
-  /* the last node has been removed */
+  struct Node *new_head = list->head->next;
+  /* there are only one node in list */
   if (new_head == NULL) {
     list->head = NULL;
     list->tail = NULL;
-    return head->value;
+    return head;
   }
-  /* establishing new connections */
-  head->next = NULL;
-  new_head->prev = NULL;
+
+  /* updating head */
+  list->head->next->prev = NULL;
+  list->head->next = NULL;
   list->head = new_head;
 
-  return new_head->value;
+  return head;
 }
 
-void *pop_right(struct LinkedList *list) {}
-void *peek_head(struct LinkedList *list) {}
-void *peek_tail(struct LinkedList *list) {}
+struct Node *pop_right(struct LinkedList *list) {
+  if (list->tail == NULL) {
+    return NULL;
+  }
+
+  struct Node *tail = list->tail;
+  struct Node *new_tail = list->tail->prev;
+  /* there is onlye one node in list */
+  if (new_tail == NULL) {
+    list->head = NULL;
+    list->tail = NULL;
+    return tail;
+  }
+
+  /* updating tail */
+  list->tail->prev->next = NULL;
+  list->tail->prev = NULL;
+  list->tail = new_tail;
+
+  return tail;
+}
+
+int is_empty(struct LinkedList *list) { return list->head == NULL ? 1 : 0; }
+
+void destroy_node(struct Node *node) {
+  if (node == NULL) {
+    return;
+  }
+  free(node->value);
+  free(node);
+}

@@ -17,10 +17,10 @@ struct LinkedList {
 struct Node *create_node(size_t data_size, void *data);
 struct LinkedList *create_list();
 void push_right(struct LinkedList *list, size_t data_size, void *data);
-void *pop_left(struct LinkedList *list);
+struct Node *pop_left(struct LinkedList *list);
 void push_left(struct LinkedList *list, size_t data_size, void *data);
-void *pop_right(struct LinkedList *list);
-void *peek_head(struct LinkedList *list);
-void *peek_tail(struct LinkedList *list);
+struct Node *pop_right(struct LinkedList *list);
+int is_empty(struct LinkedList *list);
+void destroy_node(struct Node *node);
 
 #endif
