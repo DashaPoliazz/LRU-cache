@@ -11,4 +11,3 @@ cmake ..
 
 # Build the project
 cmake --build .
-

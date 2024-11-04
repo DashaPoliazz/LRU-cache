@@ -1,5 +1,6 @@
 #ifndef HASHMAP_H
 #define HASHMAP_H
+#define MAX_KEY_LENGTH 50
 
 #include <stddef.h>
 
@@ -9,7 +10,7 @@ const int GROWTH_FACTOR = 2;
 
 struct Entry
 {
-    const char* key;
+    char key[MAX_KEY_LENGTH];
     void* data;
     int is_occupied;
 };

@@ -1,5 +1,7 @@
 #include "../include/hashmap.h"
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 unsigned long hash(const char* str)
 {
@@ -43,7 +45,13 @@ void insert(struct HashMap* map, const char* key, void* data)
     }
     /* hashing key to obtain the number of a bucket */
     int bucket_index = get_bucket_idx(map, key);
-    struct Entry entry = { key, data, 1 };
+    /* initializing entry */
+    struct Entry entry;
+    strncpy(entry.key, key, MAX_KEY_LENGTH - 1);
+    entry.key[MAX_KEY_LENGTH - 1] = '\0';
+    entry.data = data;
+    entry.is_occupied = 1;
+
     /* trying to insert */
     int is_occupied = map->buffer[bucket_index].is_occupied;
     int is_free = !is_occupied;
@@ -71,32 +79,51 @@ void delete_entry(struct HashMap* map, const char* key)
 {
     int bucket_idx = get_bucket_idx(map, key);
 
+    map->buffer[bucket_idx].key[0] = '\0';
     map->buffer[bucket_idx].data = NULL;
-    map->buffer[bucket_idx].key = NULL;
     map->buffer[bucket_idx].is_occupied = 0;
 }
 
 void move_buckets(struct HashMap* from, struct HashMap* to)
 {
-    for (int bucket_idx = 0; bucket_idx < from->size; bucket_idx++) {
-        const char* key = from->buffer[bucket_idx].key;
-        void* data = from->buffer[bucket_idx].data;
-        insert(to, key, data);
+    for (int bucket_idx = 0; bucket_idx < from->capacity; bucket_idx++) {
+        struct Entry* entry = &from->buffer[bucket_idx];
+        if (!entry->is_occupied) {
+            continue;
+        }
+        insert(to, entry->key, entry->data);
     }
 }
 
 void reallocate_map(struct HashMap* map)
 {
     int new_capacity = map->capacity * GROWTH_FACTOR;
-    struct HashMap* new_hash_map = create_hash_map(new_capacity);
-    move_buckets(map, new_hash_map);
-    new_hash_map->size = map->size;
-    map = new_hash_map;
+    struct HashMap* new_map = create_hash_map(new_capacity);
+    move_buckets(map, new_map);
+    free(map->buffer);
+    /* reinit buffers */
+    map->buffer = new_map->buffer;
+    map->capacity = new_capacity;
+    /* there is only a buffer lefts from the new_map */
+    free(new_map);
 }
 
 const struct Entry* get_entry(struct HashMap* map, const char* key)
 {
     int bucket_idx = get_bucket_idx(map, key);
-    const struct Entry* entry = &map->buffer[bucket_idx];
-    return entry;
+    struct Entry* entry = &map->buffer[bucket_idx];
+    if (strcmp(entry->key, key) == 0) {
+        return entry;
+    }
+
+    /* Finding bucket */
+    for (int i = 0; i < map->capacity; i++) {
+        int curr_bucket = (bucket_idx + i) % map->capacity;
+        struct Entry* entry = &map->buffer[curr_bucket];
+        if (strcmp(entry->key, key) == 0) {
+            return entry;
+        }
+    }
+
+    return NULL;
 }
