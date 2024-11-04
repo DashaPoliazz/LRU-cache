@@ -53,24 +53,11 @@ void insert(struct HashMap* map, const char* key, void* data)
     entry.is_occupied = 1;
 
     /* trying to insert */
-    int is_occupied = map->buffer[bucket_index].is_occupied;
-    int is_free = !is_occupied;
-    if (is_free) {
-        /* not a collision */
-        map->buffer[bucket_index] = entry;
-        map->size += 1;
-        return;
-    }
-    /* handling collistion with linear probbing method */
     int curr_idx = bucket_index;
-    while (curr_idx < map->capacity) {
-        int new_bucket_index = curr_idx % map->capacity;
-        int is_free = !map->buffer[new_bucket_index].is_occupied;
-        if (is_free) {
-            break;
-        }
-        curr_idx++;
+    while (map->buffer[curr_idx].is_occupied) {
+        curr_idx = (curr_idx + 1) % map->capacity;
     }
+
     map->buffer[curr_idx] = entry;
     map->size += 1;
 }
@@ -126,4 +113,12 @@ const struct Entry* get_entry(struct HashMap* map, const char* key)
     }
 
     return NULL;
+}
+
+void free_hashmap(struct HashMap* map)
+{
+    if (map != NULL) {
+        free(map->buffer);
+        free(map);
+    }
 }

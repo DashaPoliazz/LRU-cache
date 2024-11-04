@@ -132,6 +132,41 @@ void test_reallocations()
     assert(max == default_capacity);
 }
 
+void test_map_operations()
+{
+    printf("test_map_operations\n");
+
+    int capacity = 100;
+    struct HashMap* map = create_hash_map(capacity);
+
+    char* key_one = "key1";
+    int data_one = 100;
+    insert(map, key_one, &data_one);
+
+    char* key_two = "key2";
+    int data_two = 200;
+    insert(map, key_two, &data_two);
+
+    const struct Entry* entry_one = get_entry(map, key_one);
+    assert(entry_one != NULL);
+    assert(*(int*)entry_one->data == data_one);
+
+    const struct Entry* entry_two = get_entry(map, key_two);
+    assert(entry_two != NULL);
+    assert(*(int*)entry_two->data == data_two);
+
+    delete_entry(map, key_one);
+    const struct Entry* deleted_entry = get_entry(map, key_one);
+    assert(deleted_entry == NULL);
+
+    int new_data_one = 300;
+    insert(map, key_one, &new_data_one);
+
+    const struct Entry* updated_entry = get_entry(map, key_one);
+    assert(updated_entry != NULL);
+    assert(*(int*)updated_entry->data == new_data_one);
+}
+
 int main()
 {
     test_hashing();
@@ -139,6 +174,7 @@ int main()
     test_insert_one();
     test_insert_many();
     test_reallocations();
+    test_map_operations();
 
     return 0;
 }

@@ -34,5 +34,6 @@ const struct Entry* get_entry(struct HashMap* map, const char* key);
 void move_buckets(struct HashMap* from, struct HashMap* to);
 int needs_reallocation(struct HashMap* map);
 void reallocate_map(struct HashMap* map);
+void free_hashmap(struct HashMap* map);
 
 #endif
