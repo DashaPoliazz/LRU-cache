@@ -14,9 +14,15 @@ struct LRU
     struct LinkedList* cache;
 };
 
+struct ListValue
+{
+    const char* key;
+    const void* value;
+};
+
 struct LRU* init_cache(int capacity);
 void cache_insert(struct LRU* cache, char* key, void* value);
-void* cache_get(struct LRU* cache, char* key);
+const void* cache_get(struct LRU* cache, char* key);
 void* cache_remove(struct LRU* cache, char* key);
 void* clear_cache(struct LRU* cache);
 
