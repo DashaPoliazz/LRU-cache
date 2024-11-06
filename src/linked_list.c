@@ -119,3 +119,41 @@ void destroy_node(struct Node* node)
     free(node->value);
     free(node);
 }
+
+/* it should be guaranteed that node is in the list */
+void move_to_head(struct LinkedList* list, struct Node* node)
+
+{
+    /* it's either the single node or it's in the head already */
+    int is_single = node->next == NULL && node->prev == NULL;
+    int is_head = list->head == node;
+    if (is_single || is_head) {
+        return;
+    }
+
+    /* moving from the tail */
+    int is_tail = list->tail == node;
+    if (is_tail) {
+        /* there is guaranteed more than one node in the list and thus tail->prev != NULL */
+        struct Node* new_tail = list->tail->prev;
+
+        list->tail->next = NULL;
+        list->tail->prev = NULL;
+
+        list->head->prev = node;
+        node->next = list->head;
+
+        list->tail = new_tail;
+        list->head = node;
+
+        return;
+    }
+    /* moving from the middle */
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+    node->prev = NULL;
+    node->next = list->head;
+
+    list->head->prev = node;
+    list->head = node;
+}

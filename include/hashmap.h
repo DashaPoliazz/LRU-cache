@@ -30,6 +30,7 @@ struct Entry create_entry(const char* key, void* data);
 void insert(struct HashMap* map, const char* key, void* data);
 void delete_entry(struct HashMap* map, const char* key);
 const struct Entry* get_entry(struct HashMap* map, const char* key);
+int has(struct HashMap* map, const char* key);
 
 void move_buckets(struct HashMap* from, struct HashMap* to);
 int needs_reallocation(struct HashMap* map);

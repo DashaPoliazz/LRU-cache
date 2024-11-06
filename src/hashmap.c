@@ -122,3 +122,9 @@ void free_hashmap(struct HashMap* map)
         free(map);
     }
 }
+
+int has(struct HashMap* map, const char* key)
+{
+    const struct Entry* entry = get_entry(map, key);
+    return entry == NULL ? 0 : 1;
+}

@@ -132,6 +132,77 @@ void test_is_empty()
     assert(is_empty(list) == 1);
 }
 
+void test_move_to_head()
+{
+    printf("test_move_to_head\n");
+
+    struct LinkedList* list = create_list();
+    for (int i = 0; i < 10; i++) {
+        int data = i + 1;
+        size_t data_size = sizeof(int);
+        push_right(list, data_size, &data);
+    }
+
+    struct Node* node = list->head;
+    while (*(int*)node->value != 3) {
+        node = node->next;
+    }
+
+    move_to_head(list, node);
+
+    int direct_sequence[10] = { 3, 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+    int result[10] = {};
+
+    int i = 0;
+    struct Node* curr_head = list->head;
+    while (curr_head != NULL) {
+        result[i] = *(int*)curr_head->value;
+        curr_head = curr_head->next;
+        i++;
+    }
+
+    for (int i = 0; i < 10; i++) {
+        assert(direct_sequence[i] == result[i]);
+    }
+
+    struct Node* curr_tail = list->tail;
+    int j = 9;
+    while (curr_tail != NULL) {
+        assert(*(int*)curr_tail->value == result[j]);
+        curr_tail = curr_tail->prev;
+        j--;
+    }
+}
+
+void test_move_to_head_corner_cases()
+{
+    printf("test_move_to_head_corner_cases\n");
+
+    struct LinkedList* list = create_list();
+
+    int one = 1;
+    size_t data_size = sizeof(int);
+    push_right(list, data_size, &one);
+
+    move_to_head(list, list->head);
+    assert(*(int*)list->head->value == one);
+    assert(list->head->prev == NULL);
+    assert(list->head->next == NULL);
+
+    int two = 2;
+    push_right(list, data_size, &two);
+
+    move_to_head(list, list->head->next);
+    assert(*(int*)list->head->value == two);
+
+    // printf("head = %i", *(int*)list->head->value);
+    // printf("head.next = %i", *(int*)list->head->next->value);
+    assert(*(int*)list->head->next->value == one);
+    // printf("head.next.prev = %i", *(int*)list->head->next->prev->value);
+    assert(*(int*)list->head->next->prev->value == two);
+    assert(list->head->prev == NULL);
+}
+
 int main()
 {
     printf("Running tests for LRU Cache");
@@ -141,5 +212,7 @@ int main()
     test_pop_left();
     test_pop_right();
     test_is_empty();
+    test_move_to_head();
+    test_move_to_head_corner_cases();
     return 0;
 }
