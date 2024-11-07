@@ -203,6 +203,91 @@ void test_move_to_head_corner_cases()
     assert(list->head->prev == NULL);
 }
 
+void test_remove_head_eq_tail()
+{
+    printf("test_remove_head_eq_tail\n");
+
+    struct LinkedList* list = create_list();
+
+    int one = 1;
+    size_t data_size = sizeof(int);
+    push_right(list, data_size, &one);
+    assert(list->head == list->tail);
+
+    remove_node(list, list->head);
+    assert(list->head == NULL);
+    assert(list->tail == NULL);
+}
+
+void test_remove_head()
+{
+    printf("test_remove_head\n");
+
+    struct LinkedList* list = create_list();
+
+    int one = 1;
+    size_t data_size = sizeof(int);
+    push_right(list, data_size, &one);
+    int two = 2;
+    push_right(list, data_size, &two);
+    int three = 3;
+    push_right(list, data_size, &three);
+
+    remove_node(list, list->head);
+    assert(*(int*)list->head->value == 2);
+    assert(list->head->prev == NULL);
+}
+
+void test_remove_tail()
+{
+    printf("test_remove_tail\n");
+
+    struct LinkedList* list = create_list();
+
+    int one = 1;
+    size_t data_size = sizeof(int);
+    push_right(list, data_size, &one);
+    int two = 2;
+    push_right(list, data_size, &two);
+    int three = 3;
+    push_right(list, data_size, &three);
+
+    remove_node(list, list->tail);
+    assert(*(int*)list->tail->value == 2);
+    assert(*(int*)list->tail->prev->value == 1);
+}
+
+void test_remove_middle()
+{
+    printf("test_remove_middle\n");
+
+    struct LinkedList* list = create_list();
+
+    int one = 1;
+    size_t data_size = sizeof(int);
+    push_right(list, data_size, &one);
+    int two = 2;
+    push_right(list, data_size, &two);
+    int three = 3;
+    push_right(list, data_size, &three);
+
+    remove_node(list, list->head->next);
+
+    assert(*(int*)list->head->value == 1);
+    assert(*(int*)list->tail->value == 3);
+    assert(list->head->next == list->tail);
+    assert(list->tail->prev == list->head);
+}
+
+void test_remove_node()
+{
+    printf("test_remove_head_eq_tail\n");
+    test_remove_head_eq_tail();
+    test_remove_head();
+    test_remove_tail();
+    test_remove_middle();
+}
+
 int main()
 {
     printf("Running tests for LRU Cache");
@@ -214,5 +299,6 @@ int main()
     test_is_empty();
     test_move_to_head();
     test_move_to_head_corner_cases();
+    test_remove_node();
     return 0;
 }

@@ -1,12 +1,12 @@
 #ifndef HASHMAP_H
 #define HASHMAP_H
+
 #define MAX_KEY_LENGTH 50
+#define INITIAL_CAPACITY 100
+#define LOAD_FACTOR 0.75
+#define GROWTH_FACTOR 2
 
 #include <stddef.h>
-
-const int INITIAL_CAPACITY = 100;
-const float LOAD_FACTOR = 0.75;
-const int GROWTH_FACTOR = 2;
 
 struct Entry
 {

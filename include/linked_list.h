@@ -25,5 +25,6 @@ struct Node* pop_right(struct LinkedList* list);
 int is_empty(struct LinkedList* list);
 void destroy_node(struct Node* node);
 void move_to_head(struct LinkedList* list, struct Node* node);
+void remove_node(struct LinkedList* list, struct Node* node);
 
 #endif

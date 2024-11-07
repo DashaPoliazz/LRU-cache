@@ -107,6 +107,7 @@ struct Node* pop_right(struct LinkedList* list)
 }
 
 int is_empty(struct LinkedList* list)
+
 {
     return list->head == NULL ? 1 : 0;
 }
@@ -122,7 +123,6 @@ void destroy_node(struct Node* node)
 
 /* it should be guaranteed that node is in the list */
 void move_to_head(struct LinkedList* list, struct Node* node)
-
 {
     /* it's either the single node or it's in the head already */
     int is_single = node->next == NULL && node->prev == NULL;
@@ -156,4 +156,42 @@ void move_to_head(struct LinkedList* list, struct Node* node)
 
     list->head->prev = node;
     list->head = node;
+}
+
+void remove_node(struct LinkedList* list, struct Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+
+    if (node == list->head && node == list->tail) {
+        list->head = NULL;
+        list->tail = NULL;
+        return;
+    }
+
+    /* there is no prev -> it's head */
+    if (list->head == node) {
+        struct Node* new_head = node->next;
+        if (new_head != NULL) {
+            node->next->prev = NULL;
+            node->next = NULL;
+        }
+        list->head = new_head;
+        return;
+    }
+    /* there is no next -> it's tail */
+    if (list->tail == node) {
+        /* it's guaranteed that head != tail */
+        struct Node* new_tail = node->prev;
+        node->prev->next = NULL;
+        node->prev = NULL;
+        list->tail = new_tail;
+        return;
+    }
+    /* it's regular node */
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+    node->prev = NULL;
+    node->next = NULL;
 }
