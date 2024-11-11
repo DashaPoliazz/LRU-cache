@@ -23,7 +23,7 @@ struct ListValue
 struct LRU* init_cache(int capacity);
 void cache_insert(struct LRU* cache, char* key, void* value);
 const void* cache_get(struct LRU* cache, char* key);
-void* cache_remove(struct LRU* cache, char* key);
-void* clear_cache(struct LRU* cache);
+void cache_remove(struct LRU* cache, char* key);
+void clear_cache(struct LRU* cache);
 
 #endif

@@ -1,5 +1,6 @@
 #include "../include/linked_list.h"
 #include "../include/lru_cashe.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 struct LRU* init_cache(int capacity)
@@ -9,6 +10,7 @@ struct LRU* init_cache(int capacity)
     struct LRU* lru = (struct LRU*)calloc(1, sizeof(struct LRU));
     lru->cache = list;
     lru->lookup = lookup;
+    lru->capacity = capacity;
     return lru;
 };
 
@@ -25,10 +27,14 @@ void cache_insert(struct LRU* lru, char* key, void* value)
         struct ListValue* list_value = calloc(1, sizeof(struct ListValue));
         list_value->key = key;
         list_value->value = value;
-        push_left(lru->cache, sizeof(struct ListValue*), list_value);
+        push_left(lru->cache, sizeof(struct ListValue), list_value);
         insert(lru->lookup, key, lru->cache->head);
+        /* moving node from it's current position to the head of list */
+        struct Node* node_to_move = (struct Node*)get_entry(lru->lookup, key)->data;
+        move_to_head(lru->cache, node_to_move);
+
+        lru->size += 1;
     }
-    lru->size += 1;
     /* evicting extra node if it's needed */
     if (lru->size > lru->capacity) {
         struct Node* tail = pop_right(lru->cache);
@@ -53,9 +59,31 @@ const void* cache_get(struct LRU* lru, char* key)
     /* miss */
     return NULL;
 }
-void* cache_remove(struct LRU* cache, char* key)
+
+void cache_remove(struct LRU* cache, char* key)
 {
+    int exists = has(cache->lookup, key);
+    if (!exists) {
+        return;
+    }
+
+    struct Entry* entry = (struct Entry*)get_entry(cache->lookup, key);
+    struct Node* node_to_remove = (struct Node*)entry->data;
+    remove_node(cache->cache, node_to_remove);
+    free_entry(cache->lookup, entry);
+    destroy_node(node_to_remove);
 }
-void* clear_cache(struct LRU* cache)
+
+void clear_cache(struct LRU* cache)
 {
+    struct HashMap* lookup = cache->lookup;
+    free_hashmap(lookup);
+
+    struct LinkedList* list = cache->cache;
+    struct Node* node_to_destroy = cache->cache->head;
+
+    while (node_to_destroy != NULL) {
+        destroy_node(node_to_destroy);
+        node_to_destroy = node_to_destroy->next;
+    }
 }

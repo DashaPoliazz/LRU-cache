@@ -95,7 +95,7 @@ void reallocate_map(struct HashMap* map)
     free(new_map);
 }
 
-const struct Entry* get_entry(struct HashMap* map, const char* key)
+struct Entry* get_entry(struct HashMap* map, const char* key)
 {
     int bucket_idx = get_bucket_idx(map, key);
     struct Entry* entry = &map->buffer[bucket_idx];
@@ -127,4 +127,13 @@ int has(struct HashMap* map, const char* key)
 {
     const struct Entry* entry = get_entry(map, key);
     return entry == NULL ? 0 : 1;
+}
+
+void free_entry(struct HashMap* map, struct Entry* entry)
+{
+    if (entry == NULL) {
+        return;
+    }
+
+    free(entry);
 }

@@ -195,3 +195,12 @@ void remove_node(struct LinkedList* list, struct Node* node)
     node->prev = NULL;
     node->next = NULL;
 }
+
+void destroy_list(struct LinkedList* list)
+{
+    struct Node* node_to_destroy = list->head;
+    while (node_to_destroy != NULL) {
+        destroy_node(node_to_destroy);
+        node_to_destroy = node_to_destroy->next;
+    }
+}
